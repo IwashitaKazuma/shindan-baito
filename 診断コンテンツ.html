@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>マイナビバイト 金欠学生向けバイト診断 | あなたにピッタリのバイトを見つけよう</title>
+    <style>
+        /* ========== リセット・基本設定 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f8f9fa;
+        }
+
+        .diagnosis-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* ========== 共通ボタンスタイル ========== */
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #00A0E9 0%, #0077C8 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 160, 233, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 160, 233, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ========== スタート画面 ========== */
+        .start-screen {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .start-screen h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #00A0E9;
+            line-height: 1.4;
+        }
+
+        .start-screen .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .start-screen p {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .feature-list li {
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #2d3748;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00A0E9;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* ========== 月収入力画面 ========== */
+        .income-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .income-screen h2 {
+            font-size: 28px;
+            color: #00A0E9;
+            margin-bottom: 20px;
+        }
+
+        .income-screen p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .income-input-wrapper {
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .income-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .income-input {
+            width: 200px;
+            padding: 15px 20px;
+            font-size: 24px;
+            border: 2px solid #00A0E9;
+            border-radius: 10px;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .income-unit {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00A0E9;
+        }
+
+        .income-examples {
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        /* ========== 質問画面 ========== */
+        .question-screen {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00A0E9 0%, #0077C8 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-counter {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            padding: 18px 25px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            color: #2d3748;
+        }
+
+        .option-btn:hover {
+            border-color: #00A0E9;
+            background: #f0f9ff;
+            transform: translateX(5px);
+        }
+
+        .option-btn.selected {
+            border-color: #00A0E9;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            font-weight: bold;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        /* ========== 結果画面 ========== */
+        .result-screen {
+            display: none;
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #00A0E9 0%, #0077C8 100%);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            margin-bottom: 0;
+        }
+
+        .result-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .result-type-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .result-content {
+            background: white;
+            padding: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .result-section {
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .result-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .result-section h3 {
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 20px;
+            padding-left: 15px;
+            border-left: 4px solid #00A0E9;
+        }
+
+        .income-info {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .income-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+
+        .work-hours {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .job-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .job-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00A0E9;
+            margin-bottom: 15px;
+        }
+
+        .job-description {
+            color: #4a5568;
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .job-salary {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00A0E9;
+        }
+
+        .salary-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .salary-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00A0E9;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .skill-tag {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #00A0E9;
+            border: 1px solid #00A0E9;
+        }
+
+        /* ========== SNSシェアボタン ========== */
+        .share-section {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .share-section h3 {
+            font-size: 20px;
+            color: #2e7d32;
+            margin-bottom: 15px;
+            border: none;
+            padding: 0;
+        }
+
+        .share-section p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .share-btn-twitter {
+            background: #1DA1F2;
+            color: white;
+        }
+
+        .share-btn-line {
+            background: #00B900;
+            color: white;
+        }
+
+        .share-btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            color: white;
+        }
+
+        .restart-btn {
+            display: block;
+            margin: 40px auto 0;
+        }
+
+        /* ========== ローディング ========== */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #00A0E9;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== レスポンシブ対応 ========== */
+        @media (max-width: 768px) {
+            .diagnosis-container {
+                padding: 15px;
+            }
+
+            .start-screen h1 {
+                font-size: 24px;
+            }
+
+            .income-screen h2 {
+                font-size: 22px;
+            }
+
+            .income-input {
+                width: 150px;
+                font-size: 20px;
+            }
+
+            .question-card {
+                padding: 25px 20px;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+
+            .result-content {
+                padding: 25px 20px;
+            }
+
+            .result-section h3 {
+                font-size: 20px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .share-buttons {
+                flex-direction: column;
+            }
+
+            .share-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="diagnosis-container">
+        <!-- スタート画面 -->
+        <div class="start-screen" id="startScreen">
+            <h1>💰 金欠大学生のための<br>バイト診断</h1>
+            <p class="subtitle">あなたにピッタリのバイトを見つけよう!</p>
+            <p>月に欲しい金額とあなたの特性から、最適なバイト先を診断します。<br>診断結果をSNSでシェアすると、求人情報をDMでお届け!</p>
+            <ul class="feature-list">
+                <li>所要時間: 約3分</li>
+                <li>質問数: 16問（月収希望 + 特性15問）</li>
+                <li>あなたの特性を8つの観点から分析</li>
+                <li>SNSシェアで求人情報GET!</li>
+            </ul>
+            <button class="btn" onclick="startDiagnosis()">診断をはじめる</button>
+        </div>
+
+        <!-- 月収入力画面 -->
+        <div class="income-screen" id="incomeScreen">
+            <h2>💵 月にいくら稼ぎたいですか?</h2>
+            <p>希望する月収を入力してください</p>
+            <div class="income-input-wrapper">
+                <div class="income-input-group">
+                    <input type="number" id="incomeInput" class="income-input" placeholder="50000" min="0" step="1000">
+                    <span class="income-unit">円</span>
+                </div>
+                <div class="income-examples">
+                    例: 50,000円 / 80,000円 / 100,000円
+                </div>
+            </div>
+            <button class="btn" onclick="submitIncome()">次へ</button>
+        </div>
+
+        <!-- 質問画面 -->
+        <div class="question-screen" id="questionScreen">
+            <div class="question-counter" id="questionCounter">質問 1 / 15</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-card">
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" style="display: none;">前の質問へ</button>
+                <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>次へ</button>
+            </div>
+        </div>
+
+        <!-- ローディング画面 -->
+        <div class="loading" id="loadingScreen">
+            <div class="loading-spinner"></div>
+            <p>あなたにピッタリのバイトを診断中...</p>
+        </div>
+
+        <!-- 結果画面 -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-header">
+                <h2>診断結果</h2>
+                <div class="result-type-badge" id="resultType"></div>
+            </div>
+            <div class="result-content">
+                <!-- 月収情報 -->
+                <div class="result-section">
+                    <h3>💰 あなたの希望月収</h3>
+                    <div id="incomeResult"></div>
+                </div>
+
+                <!-- あなたの特性 -->
+                <div class="result-section">
+                    <h3>📊 あなたの特性</h3>
+                    <div id="personalityResult"></div>
+                </div>
+
+                <!-- おすすめのバイト -->
+                <div class="result-section">
+                    <h3>💼 あなたにおすすめのバイト</h3>
+                    <div id="partTimeResult"></div>
+                </div>
+
+                <!-- SNSシェア -->
+                <div class="share-section">
+                    <h3>🎁 診断結果をシェアして求人情報をGET!</h3>
+                    <p>SNSでシェアすると、あなたにピッタリの求人情報をDMでお届けします</p>
+                    <div class="share-buttons">
+                        <a href="#" class="share-btn share-btn-twitter" id="twitterShare" target="_blank">
+                            <span>𝕏</span> Xでシェア
+                        </a>
+                        <a href="#" class="share-btn share-btn-line" id="lineShare" target="_blank">
+                            <span>📱</span> LINEでシェア
+                        </a>
+                        <a href="#" class="share-btn share-btn-instagram" id="instagramShare" target="_blank">
+                            <span>📷</span> Instagramでシェア
+                        </a>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+    <button class="btn btn-secondary" onclick="restartDiagnosis()">もう一度診断する</button>
+    <a href="https://baito.mynavi.jp/" class="btn" target="_blank" rel="noopener noreferrer">マイナビバイトへ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== データ定義 ========== //
+        const questions = [
+            { id: 1, text: "新しいことに挑戦するのが好きだ", trait: "好奇心" },
+            { id: 2, text: "チームで協力して作業するのが得意だ", trait: "協調性" },
+            { id: 3, text: "計画を立ててから行動する方だ", trait: "慎重さ" },
+            { id: 4, text: "人をまとめたり、リードするのが好きだ", trait: "リーダーシップ" },
+            { id: 5, text: "困難な状況でも諦めずに取り組める", trait: "粘り強さ" },
+            { id: 6, text: "思い立ったらすぐに行動に移す", trait: "行動力" },
+            { id: 7, text: "周りの意見を聞いて調整するのが得意だ", trait: "協調性" },
+            { id: 8, text: "リスクを避けて安全策を取る傾向がある", trait: "慎重さ" },
+            { id: 9, text: "自分から率先して行動を起こす", trait: "行動力" },
+            { id: 10, text: "任されたことは最後まで責任を持つ", trait: "責任感" },
+            { id: 11, text: "状況に応じて柔軟に対応できる", trait: "柔軟性" },
+            { id: 12, text: "目標達成のために努力を惜しまない", trait: "粘り強さ" },
+            { id: 13, text: "細かいところまで気を配る方だ", trait: "慎重さ" },
+            { id: 14, text: "予定外のことにも臨機応変に対応できる", trait: "柔軟性" },
+            { id: 15, text: "約束や期限は必ず守る", trait: "責任感" }
+        ];
+
+        const options = [
+            { text: "とても当てはまる", score: 5 },
+            { text: "やや当てはまる", score: 4 },
+            { text: "どちらともいえない", score: 3 },
+            { text: "あまり当てはまらない", score: 2 },
+            { text: "全く当てはまらない", score: 1 }
+        ];
+
+        const resultPatterns = [
+            {
+                id: 1,
+                type: "万人タイプ",
+                traits: ["協調性", "柔軟性", "責任感"],
+                jobs: [
+                    {
+                        title: "ファミリーレストラン ホールスタッフ",
+                        description: "チームで協力しながらお客様に快適な時間を提供するお仕事です。シフトの融通が利きやすく、学生に人気のバイトです。",
+                        hourlyWage: 1100,
+                        monthlyHours: null,
+                        skills: ["チームワーク", "接客スキル", "マルチタスク能力", "コミュニケーション力"]
+                    },
+                    {
+                        title: "コンビニスタッフ",
+                        description: "レジ打ちから商品陳列まで幅広い業務を経験できます。24時間営業なので、自分の都合に合わせてシフトを組みやすいです。",
+                        hourlyWage: 1050,
+                        monthlyHours: null,
+                        skills: ["接客対応", "商品管理", "レジ操作", "臨機応変な対応"]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                type: "外交官タイプ",
+                traits: ["協調性", "リーダーシップ", "柔軟性"],
+                jobs: [
+                    {
+                        title: "アパレル販売スタッフ",
+                        description: "お客様とのコミュニケーションを通じて、ファッションの提案をするお仕事です。トレンドに敏感になれます。",
+                        hourlyWage: 1150,
+                        monthlyHours: null,
+                        skills: ["接客力", "提案力", "トレンド感覚", "コーディネート力"]
+                    },
+                    {
+                        title: "カフェスタッフ",
+                        description: "おしゃれな空間で接客やドリンク作りを学べます。常連のお客様との会話も楽しめるバイトです。",
+                        hourlyWage: 1100,
+                        monthlyHours: null,
+                        skills: ["接客スキル", "ドリンク作成", "空間演出", "ホスピタリティ"]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                type: "分析官タイプ",
+                traits: ["慎重さ", "責任感", "粘り強さ"],
+                jobs: [
+                    {
+                        title: "事務・データ入力スタッフ",
+                        description: "正確性が求められる事務作業を通じて、PCスキルと集中力を養えます。静かな環境で働けます。",
+                        hourlyWage: 1200,
+                        monthlyHours: null,
+                        skills: ["PCスキル", "正確性", "タスク管理", "集中力"]
+                    },
+                    {
+                        title: "図書館スタッフ",
+                        description: "本の整理や貸出業務など、落ち着いた環境で働けます。読書好きにはたまらないバイトです。",
+                        hourlyWage: 1000,
+                        monthlyHours: null,
+                        skills: ["整理整頓", "正確性", "静かな対応", "本の知識"]
+                    }
+                ]
+            },
+            {
+                id: 4,
+                type: "探検家タイプ",
+                traits: ["好奇心", "行動力", "柔軟性"],
+                jobs: [
+                    {
+                        title: "イベント企画・運営スタッフ",
+                        description: "様々なイベントの企画から運営まで携われます。毎回違う環境で新しい経験ができるエキサイティングなバイトです。",
+                        hourlyWage: 1300,
+                        monthlyHours: null,
+                        skills: ["企画力", "実行力", "臨機応変な対応", "体力"]
+                    },
+                    {
+                        title: "リゾートバイト",
+                        description: "観光地で住み込みで働けるバイトです。短期間で集中して稼げて、新しい出会いもあります。",
+                        hourlyWage: 1200,
+                        monthlyHours: null,
+                        skills: ["接客力", "体力", "適応力", "コミュニケーション力"]
+                    }
+                ]
+            },
+            {
+                id: 5,
+                type: "指揮官タイプ",
+                traits: ["リーダーシップ", "行動力", "責任感"],
+                jobs: [
+                    {
+                        title: "塾講師・家庭教師",
+                        description: "生徒の成長をサポートしながら、指導力とリーダーシップを磨けます。時給も高めで効率的に稼げます。",
+                        hourlyWage: 1800,
+                        monthlyHours: null,
+                        skills: ["指導力", "プレゼン能力", "計画立案", "問題解決力"]
+                    },
+                    {
+                        title: "居酒屋 ホールリーダー",
+                        description: "忙しい環境でスタッフをまとめながら接客します。リーダーシップと判断力が身につきます。",
+                        hourlyWage: 1250,
+                        monthlyHours: null,
+                        skills: ["リーダーシップ", "マルチタスク", "判断力", "ストレス耐性"]
+                    }
+                ]
+            },
+            {
+                id: 6,
+                type: "職人タイプ",
+                traits: ["粘り強さ", "慎重さ", "責任感"],
+                jobs: [
+                    {
+                        title: "キッチンスタッフ",
+                        description: "料理の技術を学びながら、正確性と継続力を養えます。将来料理の道に進みたい人にもおすすめです。",
+                        hourlyWage: 1150,
+                        monthlyHours: null,
+                        skills: ["調理技術", "衛生管理", "正確性", "継続力"]
+                    },
+                    {
+                        title: "工場・製造スタッフ",
+                        description: "黙々と作業に集中できる環境です。深夜勤務なら時給アップも期待できます。",
+                        hourlyWage: 1300,
+                        monthlyHours: null,
+                        skills: ["集中力", "正確性", "体力", "継続力"]
+                    }
+                ]
+            },
+            {
+                id: 7,
+                type: "サポータータイプ",
+                traits: ["協調性", "責任感", "粘り強さ"],
+                jobs: [
+                    {
+                        title: "コールセンタースタッフ",
+                        description: "お客様の問い合わせに丁寧に対応するお仕事です。座って働けて、コミュニケーション能力が向上します。",
+                        hourlyWage: 1200,
+                        monthlyHours: null,
+                        skills: ["電話対応", "傾聴力", "問題解決力", "忍耐力"]
+                    },
+                    {
+                        title: "ドラッグストアスタッフ",
+                        description: "商品知識を学びながら、お客様の健康をサポートします。医薬品の知識も身につきます。",
+                        hourlyWage: 1100,
+                        monthlyHours: null,
+                        skills: ["商品知識", "接客力", "カウンセリング", "責任感"]
+                    }
+                ]
+            },
+            {
+                id: 8,
+                type: "クリエイタータイプ",
+                traits: ["好奇心", "柔軟性", "行動力"],
+                jobs: [
+                    {
+                        title: "Webデザイン・動画編集",
+                        description: "在宅でできるクリエイティブなバイトです。スキルを磨きながら、自分のペースで働けます。",
+                        hourlyWage: 1500,
+                        monthlyHours: null,
+                        skills: ["デザインスキル", "編集技術", "創造力", "自己管理力"]
+                    },
+                    {
+                        title: "書店・CDショップスタッフ",
+                        description: "本や音楽に囲まれて働けます。トレンドに敏感になり、知識も広がります。",
+                        hourlyWage: 1050,
+                        monthlyHours: null,
+                        skills: ["商品知識", "接客力", "トレンド感覚", "整理整頓"]
+                    }
+                ]
+            },
+            {
+                id: 9,
+                type: "エンターテイナータイプ",
+                traits: ["行動力", "リーダーシップ", "好奇心"],
+                jobs: [
+                    {
+                        title: "テーマパークスタッフ",
+                        description: "お客様に楽しい時間を提供するお仕事です。笑顔とエネルギーが求められる、やりがいのあるバイトです。",
+                        hourlyWage: 1100,
+                        monthlyHours: null,
+                        skills: ["接客力", "エンターテイメント性", "体力", "チームワーク"]
+                    },
+                    {
+                        title: "スポーツジムスタッフ",
+                        description: "運動が好きな人におすすめ。お客様のトレーニングをサポートしながら、自分も健康になれます。",
+                        hourlyWage: 1150,
+                        monthlyHours: null,
+                        skills: ["運動知識", "指導力", "コミュニケーション力", "体力"]
+                    }
+                ]
+            },
+            {
+                id: 10,
+                type: "バランサータイプ",
+                traits: ["柔軟性", "慎重さ", "協調性"],
+                jobs: [
+                    {
+                        title: "スーパーマーケットスタッフ",
+                        description: "レジ、品出し、接客など幅広い業務を経験できます。地域密着型で安定して働けます。",
+                        hourlyWage: 1050,
+                        monthlyHours: null,
+                        skills: ["接客力", "商品管理", "レジ操作", "マルチタスク"]
+                    },
+                    {
+                        title: "ホテルフロントスタッフ",
+                        description: "お客様のチェックイン・チェックアウト対応など、ホスピタリティを学べます。",
+                        hourlyWage: 1200,
+                        monthlyHours: null,
+                        skills: ["接客力", "語学力", "ホスピタリティ", "臨機応変な対応"]
+                    }
+                ]
+            }
+        ];
+
+        // ========== 状態管理 ========== //
+        let monthlyIncome = 0;
+        let currentQuestion = 0;
+        let answers = [];
+        let traitScores = {
+            "行動力": 0,
+            "協調性": 0,
+            "慎重さ": 0,
+            "リーダーシップ": 0,
+            "粘り強さ": 0,
+            "好奇心": 0,
+            "責任感": 0,
+            "柔軟性": 0
+        };
+
+        // ========== 診断開始 ========== //
+        function startDiagnosis() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('incomeScreen').style.display = 'block';
+        }
+
+        // ========== 月収入力 ========== //
+        function submitIncome() {
+            const incomeValue = document.getElementById('incomeInput').value;
+            if (!incomeValue || incomeValue <= 0) {
+                alert('希望月収を入力してください');
+                return;
+            }
+            monthlyIncome = parseInt(incomeValue);
+            document.getElementById('incomeScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+            showQuestion();
+        }
+
+        // ========== 質問表示 ========== //
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionCounter').textContent = `質問 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('questionText').textContent = question.text;
+            
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option.text;
+                btn.onclick = () => selectOption(index);
+                
+                if (answers[currentQuestion] !== undefined && answers[currentQuestion] === index) {
+                    btn.classList.add('selected');
+                }
+                
+                optionsContainer.appendChild(btn);
+            });
+
+            document.getElementById('prevBtn').style.display = currentQuestion > 0 ? 'block' : 'none';
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? '結果を見る' : '次へ';
+            document.getElementById('nextBtn').disabled = answers[currentQuestion] === undefined;
+        }
+
+        // ========== 選択肢選択 ========== //
+        function selectOption(optionIndex) {
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach(btn => btn.classList.remove('selected'));
+            optionBtns[optionIndex].classList.add('selected');
+
+            answers[currentQuestion] = optionIndex;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        // ========== 次の質問へ ========== //
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                calculateResult();
+            }
+        }
+
+        // ========== 前の質問へ ========== //
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        // ========== 結果計算 ========== //
+        function calculateResult() {
+            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'block';
+
+            questions.forEach((question, index) => {
+                const answerIndex = answers[index];
+                const score = options[answerIndex].score;
+                traitScores[question.trait] += score;
+            });
+
+            const sortedTraits = Object.entries(traitScores)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3)
+                .map(entry => entry[0]);
+
+            let bestMatch = resultPatterns[0];
+            let maxMatchCount = 0;
+
+            resultPatterns.forEach(pattern => {
+                const matchCount = pattern.traits.filter(trait => sortedTraits.includes(trait)).length;
+                if (matchCount > maxMatchCount) {
+                    maxMatchCount = matchCount;
+                    bestMatch = pattern;
+                }
+            });
+
+            setTimeout(() => {
+                showResult(bestMatch, sortedTraits);
+            }, 1500);
+        }
+
+        // ========== 結果表示 ========== //
+        function showResult(result, topTraits) {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+
+            document.getElementById('resultType').textContent = result.type;
+
+            // 月収情報
+            const incomeHtml = `
+                <div class="income-info">
+                    <div class="income-amount">月 ${monthlyIncome.toLocaleString()}円</div>
+                    <div class="work-hours">目標達成まで、おすすめバイトで働く時間の目安を確認しましょう!</div>
+                </div>
+            `;
+            document.getElementById('incomeResult').innerHTML = incomeHtml;
+
+            // 特性表示
+            const personalityHtml = `
+                <div class="job-card">
+                    <p class="job-description">あなたの強みは以下の特性です:</p>
+                    <div class="skills-list">
+                        ${topTraits.map(trait => `<span class="skill-tag">${trait}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('personalityResult').innerHTML = personalityHtml;
+
+            // バイト先表示
+            const partTimeHtml = result.jobs.map(job => {
+                const monthlyHours = Math.ceil(monthlyIncome / job.hourlyWage);
+                const dailyHours = Math.ceil(monthlyHours / 20);
+                
+                return `
+                    <div class="job-card">
+                        <div class="job-title">${job.title}</div>
+                        <p class="job-description">${job.description}</p>
+                        <div class="job-salary">
+                            <div class="salary-label">時給</div>
+                            <div class="salary-amount">${job.hourlyWage.toLocaleString()}円</div>
+                        </div>
+                        <div class="job-salary">
+                            <div class="salary-label">月${monthlyIncome.toLocaleString()}円稼ぐには</div>
+                            <div class="salary-amount">月${monthlyHours}時間 (1日約${dailyHours}時間 × 週5日)</div>
+                        </div>
+                        <p style="font-weight: bold; margin-top: 15px; color: #2d3748;">このバイトで得られるスキル:</p>
+                        <div class="skills-list">
+                            ${job.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('partTimeResult').innerHTML = partTimeHtml;
+
+            // SNSシェアリンク設定
+            const shareText = `私は「${result.type}」でした!\\nマイナビバイトで自分にピッタリのバイトを見つけよう!`;
+            const shareUrl = encodeURIComponent(window.location.href);
+            
+            document.getElementById('twitterShare').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}&hashtags=マイナビバイト,バイト診断`;
+            document.getElementById('lineShare').href = `https://social-plugins.line.me/lineit/share?url=${shareUrl}`;
+            // Instagramは直接シェアできないため、クリップボードにコピー
+            document.getElementById('instagramShare').onclick = function(e) {
+                e.preventDefault();
+                navigator.clipboard.writeText(shareText + '\\n' + window.location.href);
+                alert('診断結果をコピーしました!\\nInstagramのストーリーやプロフィールに貼り付けてシェアしてください。');
+            };
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ========== 診断リスタート ========== //
+        function restartDiagnosis() {
+            monthlyIncome = 0;
+            currentQuestion = 0;
+            answers = [];
+            traitScores = {
+                "行動力": 0,
+                "協調性": 0,
+                "慎重さ": 0,
+                "リーダーシップ": 0,
+                "粘り強さ": 0,
+                "好奇心": 0,
+                "責任感": 0,
+                "柔軟性": 0
+            };
+
+            document.getElementById('incomeInput').value = '';
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
