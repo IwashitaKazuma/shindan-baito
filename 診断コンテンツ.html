@@ -3,139 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>マイナビバイト 金欠学生向けバイト診断 | あなたにピッタリのバイトを見つけよう</title>
+    <title>マイナビバイト ハイブリッドバイト診断 | 性格×条件でマッチング</title>
     <style>
         /* ========== リセット・基本設定 ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #f8f9fa; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.6; }
+        body { background: #f0f4f8; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; color: #333; line-height: 1.6; }
         
-        .diagnosis-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .diagnosis-container { max-width: 600px; margin: 0 auto; background: #fff; min-height: 100vh; box-shadow: 0 0 20px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
 
         /* ========== 共通ボタンスタイル ========== */
         .btn {
-            display: inline-block; padding: 15px 40px;
+            display: block; width: 100%; padding: 16px;
             background: linear-gradient(135deg, #00A0E9 0%, #0077C8 100%);
-            color: white; border: none; border-radius: 50px;
+            color: white; border: none; border-radius: 12px;
             font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: all 0.3s ease; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(0, 160, 233, 0.3);
-            width: 100%; max-width: 300px; text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 160, 233, 0.2);
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 160, 233, 0.4); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background: #ccc; box-shadow: none; }
-        
-        .btn-secondary { background: #e2e8f0; color: #2d3748; box-shadow: none; }
-        .btn-secondary:hover { background: #cbd5e0; }
+        .btn:active { transform: scale(0.98); }
+        .btn-secondary { background: #e2e8f0; color: #4a5568; box-shadow: none; margin-top: 10px; }
 
         /* ========== 画面共通 ========== */
-        .screen {
-            background: white; border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            padding: 40px; margin-bottom: 20px; display: none;
-        }
-        .screen.active { display: block; animation: fadeIn 0.5s ease; }
+        .screen { padding: 30px 20px; display: none; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1, h2, h3 { color: #00A0E9; margin-bottom: 20px; text-align: center; }
+        h1 { color: #00A0E9; font-size: 24px; text-align: center; margin-bottom: 10px; }
+        h2 { font-size: 20px; margin-bottom: 20px; text-align: center; color: #2d3748; }
 
         /* ========== スタート画面 ========== */
-        .feature-list { list-style: none; margin: 30px auto; max-width: 500px; text-align: left; }
-        .feature-list li { padding: 10px 0 10px 30px; position: relative; }
-        .feature-list li:before { content: "✓"; position: absolute; left: 0; color: #00A0E9; font-weight: bold; font-size: 20px; }
+        .hero-img { width: 100%; max-width: 250px; display: block; margin: 20px auto; }
+        .tag-line { text-align: center; color: #718096; font-size: 14px; margin-bottom: 30px; }
 
-        /* ========== 月収入力画面 ========== */
-        .income-input-group { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 30px 0; }
-        .income-input { width: 200px; padding: 10px; font-size: 24px; border: 2px solid #00A0E9; border-radius: 10px; text-align: right; }
+        /* ========== 質問画面 ========== */
+        .progress-area { margin-bottom: 20px; }
+        .progress-bar { height: 6px; background: #edf2f7; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #00A0E9; width: 0%; transition: width 0.3s ease; }
+        .q-number { font-size: 12px; color: #00A0E9; font-weight: bold; margin-bottom: 5px; display: block; }
 
-        /* ========== 質問画面（5問セット表示） ========== */
-        .progress-header { margin-bottom: 30px; }
-        .progress-bar { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #00A0E9; width: 0%; transition: width 0.5s ease; }
-        .progress-text { text-align: center; margin-top: 5px; font-size: 14px; color: #666; }
+        .question-card { margin-bottom: 30px; }
+        .question-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; line-height: 1.5; }
 
-        .question-group { margin-bottom: 40px; } /* 1ページ分の設問ラッパー */
-        
-        .single-question-block {
-            margin-bottom: 30px; padding-bottom: 30px;
-            border-bottom: 1px solid #eee;
+        /* 選択肢スタイル */
+        .options-vertical { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px;
+            background: #fff; cursor: pointer; text-align: left; transition: all 0.2s;
+            position: relative;
         }
-        .single-question-block:last-child { border-bottom: none; }
+        .option-btn:hover { border-color: #00A0E9; background: #f0f9ff; }
+        .option-btn.selected { border-color: #00A0E9; background: #e6f6ff; color: #0077C8; font-weight: bold; }
         
-        .q-text { font-weight: bold; font-size: 18px; margin-bottom: 15px; color: #2d3748; }
-        
-        /* 選択肢を横並び（SPは縦）にするスタイル */
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-        }
-        
-        .option-label {
-            display: flex; flex-direction: column; align-items: center;
-            cursor: pointer; position: relative;
-        }
-        
-        .option-input { position: absolute; opacity: 0; }
-        
-        .option-circle {
-            width: 40px; height: 40px; border-radius: 50%;
-            border: 2px solid #ddd; background: #fff;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s; margin-bottom: 8px;
-            font-weight: bold; color: #aaa;
-        }
-        
-        .option-text { font-size: 12px; color: #666; text-align: center; line-height: 1.2; }
-
-        /* 選択状態 */
-        .option-input:checked + .option-circle {
-            background: #00A0E9; border-color: #00A0E9; color: white; transform: scale(1.1);
-        }
-        .option-input:checked ~ .option-text { color: #00A0E9; font-weight: bold; }
-
-        /* ナビゲーション */
-        .nav-buttons { display: flex; justify-content: space-between; gap: 20px; margin-top: 40px; }
+        /* チャート分岐質問用の特別スタイル */
+        .chart-question { border: 2px solid #ffd700; background: #fffbe6; padding: 20px; border-radius: 15px; }
+        .chart-badge { background: #ffd700; color: #333; font-size: 12px; padding: 2px 8px; border-radius: 4px; font-weight: bold; vertical-align: middle; margin-right: 5px; }
 
         /* ========== 結果画面 ========== */
-        .result-type-badge {
-            background: #e3f2fd; color: #00A0E9; padding: 10px 30px;
-            border-radius: 30px; font-size: 24px; font-weight: bold;
-            display: inline-block; margin: 10px 0;
-        }
-        
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .result-type { font-size: 28px; font-weight: bold; color: #00A0E9; margin: 10px 0; }
+        .match-tags { display: flex; justify-content: center; gap: 5px; margin-bottom: 15px; }
+        .tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #edf2f7; color: #4a5568; }
+        .tag.highlight { background: #ebf8ff; color: #00A0E9; border: 1px solid #00A0E9; }
+
         .job-card {
-            background: #f8fafc; border-left: 5px solid #00A0E9;
-            padding: 20px; margin-bottom: 20px; border-radius: 8px;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border-left: 5px solid #00A0E9;
         }
-        .job-title { font-size: 18px; font-weight: bold; color: #2d3748; margin-bottom: 10px; }
-        .skill-tag {
-            display: inline-block; background: white; color: #00A0E9;
-            border: 1px solid #00A0E9; padding: 4px 12px; border-radius: 15px;
-            font-size: 12px; margin: 2px;
-        }
+        .job-title { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .job-wage { color: #e53e3e; font-weight: bold; font-size: 16px; }
 
-        /* SNSシェア */
-        .share-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .share-btn {
-            display: flex; align-items: center; gap: 5px; padding: 10px 20px;
-            border-radius: 5px; color: white; text-decoration: none; font-size: 14px;
-        }
-        .bg-x { background: #000; }
-        .bg-line { background: #00B900; }
-        .bg-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        /* パラメータチャート（簡易CSS版） */
+        .chart-area { display: flex; justify-content: space-between; align-items: flex-end; height: 100px; padding: 0 20px; margin: 20px 0; border-bottom: 1px solid #ccc; }
+        .chart-bar-group { display: flex; flex-direction: column; align-items: center; width: 15%; }
+        .chart-bar { width: 100%; background: #bee3f8; border-radius: 4px 4px 0 0; transition: height 1s ease; height: 0; position: relative; }
+        .chart-bar.main { background: #00A0E9; }
+        .chart-label { font-size: 10px; margin-top: 5px; text-align: center; }
 
-        /* ========== SP対応 ========== */
-        @media (max-width: 600px) {
-            .screen { padding: 20px; }
-            .options-grid { grid-template-columns: 1fr; gap: 5px; }
-            .option-label { flex-direction: row; padding: 10px; border: 1px solid #eee; border-radius: 8px; }
-            .option-circle { margin-bottom: 0; margin-right: 15px; width: 30px; height: 30px; font-size: 14px; }
-            .option-text { font-size: 14px; text-align: left; }
-            .option-input:checked + .option-circle { transform: none; }
-            .option-label:has(.option-input:checked) { background: #f0f9ff; border-color: #00A0E9; }
-            .btn { width: 100%; }
-            .nav-buttons { flex-direction: column-reverse; }
-        }
+        /* シェアボタン */
+        .share-area { display: flex; gap: 10px; margin-top: 20px; }
+        .share-btn { flex: 1; padding: 10px; border-radius: 8px; text-align: center; color: white; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .x-share { background: #000; }
+        .line-share { background: #00c300; }
+
     </style>
 </head>
 <body>
@@ -144,382 +94,392 @@
     
     <!-- 1. スタート画面 -->
     <div id="screen-start" class="screen active">
-        <h1>💰 金欠大学生のための<br>バイト診断</h1>
-        <div style="text-align: center; color: #666; margin-bottom: 20px;">
-            <p>性格・希望月収・働き方のタイプから<br>あなたに最適なバイトをAIマッチング（風）！</p>
-        </div>
-        <ul class="feature-list">
-            <li>質問数: 全30問（5問×6ページ）</li>
-            <li>所要時間: 約3分</li>
-            <li>8つの性格特性 + 働き方タイプを分析</li>
-            <li>結果をシェアでAmazonギフト券が当たるチャンス</li>
-        </ul>
-        <div style="text-align: center;">
-            <button class="btn" onclick="goToScreen('screen-income')">診断をはじめる</button>
+        <div style="text-align: center; padding-top: 40px;">
+            <div style="font-size: 60px; margin-bottom: 10px;">🎓</div>
+            <h1>ハイブリッド<br>バイト診断</h1>
+            <p class="tag-line">性格スコア × こだわり条件で<br>「本当に続く」バイトを見つける</p>
+            
+            <div style="background: #f7fafc; padding: 20px; border-radius: 10px; text-align: left; font-size: 14px; color: #4a5568; margin: 20px 0;">
+                <p><strong>💡 診断の仕組み</strong></p>
+                <ul style="padding-left: 20px; margin-top: 5px;">
+                    <li>前半：あなたの得意なことを分析</li>
+                    <li>後半：どうしても譲れない条件を選択</li>
+                    <li>AIが最適な求人をマッチング！</li>
+                </ul>
+            </div>
+
+            <button class="btn" onclick="startDiagnosis()">診断スタート</button>
         </div>
     </div>
 
-    <!-- 2. 月収入力画面 -->
-    <div id="screen-income" class="screen">
-        <h2>💵 目標月収の設定</h2>
-        <p style="text-align: center;">あなたが月に稼ぎたい金額は？</p>
-        <div class="income-input-group">
-            <input type="number" id="incomeInput" class="income-input" placeholder="50000" min="0" step="1000">
-            <span style="font-size: 20px; font-weight: bold;">円</span>
-        </div>
-        <p style="text-align: center; font-size: 14px; color: #999;">例: 30,000円（お小遣い程度） / 80,000円（扶養内ギリギリ） / 120,000円（ガッツリ）</p>
-        <div style="text-align: center; margin-top: 30px;">
-            <button class="btn" onclick="validateIncome()">次へ進む</button>
-        </div>
-    </div>
-
-    <!-- 3. 質問画面（動的生成エリア） -->
-    <div id="screen-questions" class="screen">
-        <div class="progress-header">
+    <!-- 2. 質問画面 -->
+    <div id="screen-question" class="screen">
+        <div class="progress-area">
+            <span class="q-number" id="qNumber">Q1 / 10</span>
             <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-            <div id="progressText" class="progress-text">1 / 6 ページ</div>
         </div>
 
-        <div id="questionContainer">
-            <!-- ここにJSで5問ずつ質問が生成されます -->
-        </div>
+        <div id="questionContainer"></div>
 
-        <div class="nav-buttons">
-            <button class="btn btn-secondary" onclick="prevPage()" id="prevBtn" style="visibility: hidden;">戻る</button>
-            <button class="btn" onclick="nextPage()" id="nextBtn">次へ</button>
+        <!-- ナビゲーションは選択肢クリックで自動遷移させるため非表示 -->
+        <div style="margin-top: 20px; text-align: center;">
+            <button class="btn btn-secondary" onclick="prevQuestion()" id="prevBtn" style="display:none; width: auto; margin: 0 auto; padding: 10px 30px;">戻る</button>
         </div>
     </div>
 
-    <!-- 4. ローディング -->
-    <div id="screen-loading" class="screen" style="text-align: center; padding: 60px;">
-        <div style="font-size: 40px; animation: spin 1s infinite linear; display: inline-block; margin-bottom: 20px;">🔄</div>
-        <h3>診断中...</h3>
-        <p>あなたの回答を分析しています</p>
+    <!-- 3. ローディング -->
+    <div id="screen-loading" class="screen" style="text-align: center; padding-top: 100px;">
+        <div style="font-size: 50px; animation: spin 1s infinite linear; display: inline-block;">⌛</div>
+        <h2 style="margin-top: 20px;">分析中...</h2>
+        <p>性格適性と条件を<br>クロス集計しています</p>
     </div>
 
-    <!-- 5. 結果画面 -->
+    <!-- 4. 結果画面 -->
     <div id="screen-result" class="screen">
-        <h2>診断結果</h2>
-        <div style="text-align: center;">
-            <p>あなたのタイプは...</p>
-            <div id="resultType" class="result-type-badge"></div>
-            <p id="resultDesc" style="margin: 20px 0; color: #666;"></p>
+        <div class="result-header">
+            <p style="font-size: 12px; color: #718096;">あなたにピッタリなのは...</p>
+            <div class="match-tags" id="matchTags"></div>
+            <h1 class="result-type" id="resultTitle"></h1>
+            <p id="resultDesc" style="font-size: 14px; padding: 0 10px;"></p>
         </div>
 
-        <div style="background: #fff8e1; padding: 20px; border-radius: 10px; margin: 30px 0; text-align: center;">
-            <h3 style="color: #f57f17; margin-bottom: 10px;">💰 目標月収: <span id="resIncome"></span>円</h3>
-            <p>これを達成するための働き方は...</p>
+        <!-- 簡易グラフ -->
+        <div class="chart-area" id="scoreChart">
+            <!-- JSで生成 -->
         </div>
 
-        <h3>おすすめのバイト</h3>
-        <div id="resultJobs"></div>
+        <h3 style="font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #edf2f7; padding-bottom: 5px;">おすすめのバイト求人</h3>
+        <div id="jobList"></div>
 
-        <div style="background: #f0f4f8; padding: 20px; border-radius: 10px; text-align: center; margin-top: 40px;">
-            <h4>🎁 結果をシェアしてギフト券GET!</h4>
-            <div class="share-buttons">
-                <a href="#" id="shareX" class="share-btn bg-x" target="_blank">Xでシェア</a>
-                <a href="#" id="shareLine" class="share-btn bg-line" target="_blank">LINEでシェア</a>
+        <div style="margin-top: 30px; background: #f7fafc; padding: 20px; border-radius: 12px;">
+            <p style="text-align: center; font-size: 14px; margin-bottom: 10px;">結果をシェアして保存</p>
+            <div class="share-area">
+                <a href="#" id="shareX" class="share-btn x-share" target="_blank">Xでシェア</a>
+                <a href="#" id="shareLine" class="share-btn line-share" target="_blank">LINE送る</a>
             </div>
         </div>
 
-        <div style="text-align: center; margin-top: 30px; display: flex; flex-direction: column; gap: 15px; align-items: center;">
-            <a href="https://baito.mynavi.jp/" class="btn" target="_blank">マイナビバイトで求人を探す</a>
-            <button class="btn btn-secondary" onclick="location.reload()">最初からやり直す</button>
+        <div style="margin-top: 20px;">
+            <a href="https://baito.mynavi.jp/" class="btn" target="_blank">マイナビバイトで探す</a>
+            <button class="btn btn-secondary" onclick="location.reload()">もう一度診断する</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    /* ========== データ定義 (30問へ拡張) ========== 
-       category: 特性カテゴリ
-       weight: 重み付け（将来的な拡張用）
-    */
-    const allQuestions = [
-        // Page 1: 基本性格 (社交性・協調性)
-        { id: 1, text: "初対面の人とも緊張せずに話せる方だ", category: "社交性" },
-        { id: 2, text: "チームで協力して何かを成し遂げるのが好きだ", category: "協調性" },
-        { id: 3, text: "困っている人がいたら放っておけない", category: "協調性" },
-        { id: 4, text: "賑やかな場所やイベントが好きだ", category: "社交性" },
-        { id: 5, text: "自分の意見より周りの空気を優先することが多い", category: "協調性" },
+    /* ========== データ定義 ========== */
+    
+    // カテゴリ定義 (加算用)
+    // 接客(Service), 作業(Task), 創造(Creative), 体力(Physical)
 
-        // Page 2: 作業スタイル (正確性・継続力)
-        { id: 6, text: "単純作業をコツコツ続けるのは苦ではない", category: "継続力" },
-        { id: 7, text: "細かいミスにすぐ気づく方だ", category: "正確性" },
-        { id: 8, text: "一度決めたことは最後までやり遂げる", category: "継続力" },
-        { id: 9, text: "マニュアル通りに正確に進めるのが得意だ", category: "正確性" },
-        { id: 10, text: "整理整頓は好きな方だ", category: "正確性" },
+    const questions = [
+        // --- Phase 1: 加算型パート (性格・適性) Q1-Q8 ---
+        { id: 1, text: "初対面の人と話すのは苦ではない", type: "score", cat: "Service", weight: 2 },
+        { id: 2, text: "黙々と細かい作業をするのが好きだ", type: "score", cat: "Task", weight: 2 },
+        { id: 3, text: "体を動かして汗をかくのは気持ちいい", type: "score", cat: "Physical", weight: 2 },
+        { id: 4, text: "困っている人を見ると放っておけない", type: "score", cat: "Service", weight: 1 },
+        { id: 5, text: "整理整頓やデータ入力が得意だ", type: "score", cat: "Task", weight: 2 },
+        { id: 6, text: "新しいアイデアを考えるのが好き", type: "score", cat: "Creative", weight: 3 },
+        { id: 7, text: "体力には自信がある方だ", type: "score", cat: "Physical", weight: 2 },
+        { id: 8, text: "流行やトレンドには敏感だ", type: "score", cat: "Creative", weight: 1 },
 
-        // Page 3: 行動特性 (行動力・リーダーシップ)
-        { id: 11, text: "思い立ったらすぐ行動に移すタイプだ", category: "行動力" },
-        { id: 12, text: "グループの中ではリーダー役になることが多い", category: "リーダーシップ" },
-        { id: 13, text: "新しい環境に飛び込むことにワクワクする", category: "行動力" },
-        { id: 14, text: "人に指示を出したり教えたりするのが好きだ", category: "リーダーシップ" },
-        { id: 15, text: "失敗しても「なんとかなる」と切り替えられる", category: "行動力" },
-
-        // Page 4: 知的好奇心・創造性
-        { id: 16, text: "新しい流行やトレンドには敏感だ", category: "トレンド" },
-        { id: 17, text: "自分で工夫して効率を上げるのが好きだ", category: "創造性" },
-        { id: 18, text: "文章を書いたり、デザインを考えるのが好きだ", category: "創造性" },
-        { id: 19, text: "SNSで情報を発信することがよくある", category: "トレンド" },
-        { id: 20, text: "論理的に物事を考えるのが得意だ", category: "論理性" },
-
-        // Page 5: 働き方の好み (環境・体力)
-        { id: 21, text: "座っているより体を動かしている方が好きだ", category: "体力" },
-        { id: 22, text: "体力には自信がある方だ", category: "体力" },
-        { id: 23, text: "どちらかと言えば夜型人間だ", category: "夜勤適正" },
-        { id: 24, text: "少人数、もしくは一人で黙々と作業したい", category: "個人作業" },
-        { id: 25, text: "早起きは得意な方だ", category: "朝型" },
-
-        // Page 6: ストレス耐性・柔軟性
-        { id: 26, text: "急な予定変更にもイライラせず対応できる", category: "柔軟性" },
-        { id: 27, text: "忙しい状況でもパニックにならず冷静でいられる", category: "柔軟性" },
-        { id: 28, text: "理不尽なことがあっても大人の対応ができる", category: "忍耐力" },
-        { id: 29, text: "お客さんからのクレームもあまり引きずらない", category: "忍耐力" },
-        { id: 30, text: "シフトの融通が効くなら多少忙しくても頑張れる", category: "柔軟性" }
-    ];
-
-    const optionLabels = ["そう思わない", "あまり思わない", "どちらでもない", "ややそう思う", "とてもそう思う"];
-    const optionScores = [1, 2, 3, 4, 5];
-
-    // 結果パターン（ロジック用）
-    const resultTypes = [
-        {
-            name: "コミュニケーション・マスター",
-            trigger: { cats: ["社交性", "協調性", "リーダーシップ"], minScore: 12 }, // 簡易ロジック
-            desc: "人と関わることが得意なあなた。チームワークを発揮できる職場が輝きます。",
-            jobs: [
-                { title: "カフェ・居酒屋ホール", wage: 1100, desc: "持ち前の明るさでお客様をファンに！" },
-                { title: "イベントスタッフ", wage: 1200, desc: "チーム一丸となってイベントを成功させる達成感。" }
+        // --- Phase 2: チャート型パート (条件分岐) Q9-Q10 ---
+        // ここでの回答はスコア加算ではなく、結果の「フィルタリング」に使います
+        { 
+            id: 9, 
+            text: "働く環境、どっちがいい？", 
+            type: "chart", 
+            tag: "Environment", // 環境分岐
+            options: [
+                { label: "仲間とワイワイ賑やかに", val: "Team" },
+                { label: "一人でモクモクと", val: "Solo" }
             ]
         },
-        {
-            name: "コツコツ職人タイプ",
-            trigger: { cats: ["正確性", "継続力", "個人作業"], minScore: 12 },
-            desc: "集中力と正確性が武器。自分のペースで黙々と進める作業が向いています。",
-            jobs: [
-                { title: "データ入力・事務", wage: 1150, desc: "正確な作業でオフィスワークスキルもGET。" },
-                { title: "工場・軽作業", wage: 1200, desc: "接客なしで作業に没頭できます。" }
-            ]
-        },
-        {
-            name: "アクティブ・チャレンジャー",
-            trigger: { cats: ["行動力", "体力", "柔軟性"], minScore: 12 },
-            desc: "じっとしているのは苦手！体を動かしてガンガン稼ぐスタイルが最適。",
-            jobs: [
-                { title: "引っ越し・配送", wage: 1300, desc: "高時給で体も鍛えられる一石二鳥バイト。" },
-                { title: "テーマパークスタッフ", wage: 1100, desc: "広い園内を動き回りながらゲストを笑顔に。" }
-            ]
-        },
-        {
-            name: "クリエイティブ・トレンドセッター",
-            trigger: { cats: ["創造性", "トレンド", "論理性"], minScore: 12 },
-            desc: "流行に敏感でセンスが良いあなた。その感性を活かせるバイトがおすすめ。",
-            jobs: [
-                { title: "アパレル販売", wage: 1100, desc: "最新ファッションに囲まれてセンスアップ。" },
-                { title: "SNS運用・Webライター", wage: 1200, desc: "スキマ時間を使ってあなたのセンスを発信。" }
-            ]
-        },
-        // デフォルト
-        {
-            name: "オールラウンダー",
-            trigger: { cats: [], minScore: 0 },
-            desc: "バランス感覚に優れたあなた。どんな環境でも適応できるポテンシャルがあります。",
-            jobs: [
-                { title: "コンビニエンスストア", wage: 1050, desc: "多様な業務を経験でき、生活リズムに合わせて働けます。" },
-                { title: "スーパーマーケット", wage: 1080, desc: "地域密着で安定して長く働けます。" }
+        { 
+            id: 10, 
+            text: "バイトに求める優先順位は？", 
+            type: "chart", 
+            tag: "Priority", // 優先度分岐
+            options: [
+                { label: "とにかく稼ぎたい (高時給)", val: "Money" },
+                { label: "無理なく働きたい (安定)", val: "Easy" }
             ]
         }
     ];
 
+    // 通常のスコア加算用の選択肢
+    const baseOptions = [
+        { label: "あてはまる", score: 2 },
+        { label: "ややあてはまる", score: 1 },
+        { label: "あまりあてはまらない", score: 0 }
+    ];
+
+    // --- 結果データ（マトリクス） ---
+    // filterKey: {Environment}_{Priority} の組み合わせに対応
+    // mainCat: そのフィルタ内で、どのスコアが高かったらこれを出すか
+    const results = [
+        /* === Solo (一人) × Money (稼ぐ) === */
+        { 
+            filterKey: "Solo_Money", 
+            mainCat: "Physical", // 体力スコアが高い場合
+            title: "高収入・配送ドライバー", 
+            desc: "一人の時間を確保しつつ、体を動かしてガッツリ稼ぐ！あなたの体力と集中力が武器になります。",
+            tags: ["#一人で気楽", "#高収入"],
+            jobs: [{t:"デリバリースタッフ", w:"1,300円~"}, {t:"引っ越しアシスタント", w:"1,400円~"}]
+        },
+        { 
+            filterKey: "Solo_Money", 
+            mainCat: "Task", // 作業スコアが高い場合
+            title: "深夜のデータ入力・警備", 
+            desc: "深夜手当で効率よく稼ぐ！静かな環境で正確に業務をこなすあなたに最適。",
+            tags: ["#深夜割増", "#モクモク作業"],
+            jobs: [{t:"夜勤データ入力", w:"1,350円~"}, {t:"施設警備員", w:"1,250円~"}]
+        },
+        /* === Solo (一人) × Easy (楽/安定) === */
+        { 
+            filterKey: "Solo_Easy", 
+            mainCat: "Task", 
+            title: "コツコツ軽作業・検品", 
+            desc: "接客なしで精神的に安定。自分のペースで丁寧に仕事ができる環境です。",
+            tags: ["#接客なし", "#マイペース"],
+            jobs: [{t:"倉庫内ピッキング", w:"1,100円~"}, {t:"シール貼り", w:"1,050円~"}]
+        },
+        { 
+            filterKey: "Solo_Easy", 
+            mainCat: "Creative", 
+            title: "在宅ワーク・モニター", 
+            desc: "家でリラックスしながら、あなたの感性や意見をお金に変える働き方。",
+            tags: ["#在宅", "#スキマ時間"],
+            jobs: [{t:"アンケートモニター", w:"出来高制"}, {t:"テスト採点", w:"1,100円~"}]
+        },
+
+        /* === Team (大勢) × Money (稼ぐ) === */
+        { 
+            filterKey: "Team_Money", 
+            mainCat: "Service", 
+            title: "イベント・キャンペーン", 
+            desc: "チーム一丸となって盛り上げる！忙しいけど時給もやりがいも抜群。",
+            tags: ["#大量募集", "#高時給"],
+            jobs: [{t:"イベントスタッフ", w:"1,500円~"}, {t:"パチンコ店ホール", w:"1,400円~"}]
+        },
+        { 
+            filterKey: "Team_Money", 
+            mainCat: "Physical", 
+            title: "居酒屋ホール(繁忙店)", 
+            desc: "活気あふれる店内で動き回る！忙しさを楽しむ体育会系のノリが合っています。",
+            tags: ["#まかない有", "#仲間ができる"],
+            jobs: [{t:"居酒屋ホール", w:"1,250円~"}, {t:"ビアガーデン", w:"1,300円~"}]
+        },
+
+        /* === Team (大勢) × Easy (楽/安定) === */
+        { 
+            filterKey: "Team_Easy", 
+            mainCat: "Service", 
+            title: "カフェ・ファミレス", 
+            desc: "マニュアル完備で安心。同世代の仲間と楽しく働ける定番バイト。",
+            tags: ["#未経験OK", "#シフト融通"],
+            jobs: [{t:"カフェスタッフ", w:"1,100円~"}, {t:"ファミレス", w:"1,150円~"}]
+        },
+        { 
+            filterKey: "Team_Easy", 
+            mainCat: "Creative", 
+            title: "雑貨・アパレル販売", 
+            desc: "好きなものに囲まれて働く。あなたのセンスでお客様にアドバイス。",
+            tags: ["#社割あり", "#オシャレ"],
+            jobs: [{t:"アパレル販売", w:"1,100円~"}, {t:"雑貨屋スタッフ", w:"1,080円~"}]
+        }
+    ];
+
+    // デフォルト（該当なしの場合）
+    const fallbackResult = {
+        title: "コンビニスタッフ",
+        desc: "どんなタイプでも適応できるオールラウンダーなあなたへ。",
+        tags: ["#近所で働く", "#安定"],
+        jobs: [{t:"コンビニ", w:"1,050円~"}]
+    };
+
     /* ========== 状態管理 ========== */
-    let currentPage = 0;
-    const questionsPerPage = 5;
-    const totalPages = allQuestions.length / questionsPerPage;
-    let answers = {}; // { qId: score }
-    let userIncome = 0;
+    let currentQIndex = 0;
+    let scores = { Service: 0, Task: 0, Physical: 0, Creative: 0 };
+    let chartFilters = { Environment: "", Priority: "" };
 
     /* ========== 関数 ========== */
 
-    // 画面遷移
-    function goToScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-        window.scrollTo(0, 0);
-        
-        if(screenId === 'screen-questions') {
-            renderQuestionsPage();
-        }
+    function startDiagnosis() {
+        document.getElementById('screen-start').classList.remove('active');
+        document.getElementById('screen-question').classList.add('active');
+        renderQuestion();
     }
 
-    // 月収バリデーション
-    function validateIncome() {
-        const val = document.getElementById('incomeInput').value;
-        if(val && val > 0) {
-            userIncome = parseInt(val);
-            goToScreen('screen-questions');
-        } else {
-            alert("希望月収を入力してください");
-        }
-    }
-
-    // 質問ページ生成（5問ずつ）
-    function renderQuestionsPage() {
+    function renderQuestion() {
+        const q = questions[currentQIndex];
         const container = document.getElementById('questionContainer');
-        container.innerHTML = ""; // クリア
+        
+        // 進捗バー更新
+        const progress = ((currentQIndex) / questions.length) * 100;
+        document.getElementById('progressFill').style.width = `${progress}%`;
+        document.getElementById('qNumber').textContent = `Q${currentQIndex + 1} / ${questions.length}`;
+        
+        // 戻るボタン制御
+        document.getElementById('prevBtn').style.display = currentQIndex > 0 ? 'block' : 'none';
 
-        const startIdx = currentPage * questionsPerPage;
-        const endIdx = startIdx + questionsPerPage;
-        const pageQuestions = allQuestions.slice(startIdx, endIdx);
+        // 質問HTML生成
+        let optionsHtml = '';
 
-        pageQuestions.forEach((q) => {
-            const qBlock = document.createElement('div');
-            qBlock.className = 'single-question-block';
-            
-            // 選択肢HTML生成
-            let optionsHtml = `<div class="options-grid">`;
-            optionLabels.forEach((label, idx) => {
-                const score = optionScores[idx];
-                const isChecked = answers[q.id] === score ? 'checked' : '';
+        if (q.type === 'score') {
+            // 加算型質問
+            baseOptions.forEach(opt => {
                 optionsHtml += `
-                    <label class="option-label">
-                        <input type="radio" name="q${q.id}" class="option-input" value="${score}" ${isChecked} onclick="recordAnswer(${q.id}, ${score})">
-                        <div class="option-circle">${idx + 1}</div>
-                        <div class="option-text">${label}</div>
-                    </label>
+                    <button class="option-btn" onclick="answerScore('${q.cat}', ${q.weight}, ${opt.score})">
+                        ${opt.label}
+                    </button>
                 `;
             });
-            optionsHtml += `</div>`;
-
-            qBlock.innerHTML = `
-                <div class="q-text">Q${q.id}. ${q.text}</div>
-                ${optionsHtml}
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-text">${q.text}</div>
+                    <div class="options-vertical">${optionsHtml}</div>
+                </div>
             `;
-            container.appendChild(qBlock);
-        });
-
-        // プログレスバー更新
-        const progressPercent = ((currentPage) / totalPages) * 100;
-        document.getElementById('progressFill').style.width = `${progressPercent}%`;
-        document.getElementById('progressText').textContent = `${currentPage + 1} / ${totalPages} ページ`;
-        
-        // ボタン制御
-        document.getElementById('prevBtn').style.visibility = currentPage === 0 ? 'hidden' : 'visible';
-        document.getElementById('nextBtn').textContent = currentPage === totalPages - 1 ? '診断結果を見る' : '次の5問へ';
-
-        window.scrollTo(0, 0);
-    }
-
-    // 回答記録
-    window.recordAnswer = function(qId, score) {
-        answers[qId] = score;
-    }
-
-    // 次のページへ
-    window.nextPage = function() {
-        // バリデーション：現在のページの質問が全て回答されているか
-        const startIdx = currentPage * questionsPerPage;
-        const endIdx = startIdx + questionsPerPage;
-        const pageQIds = allQuestions.slice(startIdx, endIdx).map(q => q.id);
-        
-        const missed = pageQIds.some(id => !answers[id]);
-        if(missed) {
-            alert("すべての質問に回答してください");
-            return;
-        }
-
-        if(currentPage < totalPages - 1) {
-            currentPage++;
-            renderQuestionsPage();
         } else {
-            calcResult();
-        }
-    }
-
-    // 前のページへ
-    window.prevPage = function() {
-        if(currentPage > 0) {
-            currentPage--;
-            renderQuestionsPage();
-        }
-    }
-
-    // 結果計算（簡易ロジック）
-    function calcResult() {
-        goToScreen('screen-loading');
-
-        // カテゴリごとのスコア集計
-        let catScores = {};
-        allQuestions.forEach(q => {
-            if(!catScores[q.category]) catScores[q.category] = 0;
-            catScores[q.category] += (answers[q.id] || 0);
-        });
-
-        // タイプ判定
-        // 注: 本来はもっと複雑な重み付けを行いますが、ここでは簡易的にスコア上位の特徴に合致するものを探します
-        let matchedType = resultTypes[resultTypes.length - 1]; // デフォルト
-
-        // スコアの高いカテゴリトップ3を抽出
-        const sortedCats = Object.entries(catScores).sort((a,b) => b[1] - a[1]);
-        const topCatNames = sortedCats.slice(0, 3).map(entry => entry[0]);
-
-        // マッチング処理
-        for(let i = 0; i < resultTypes.length - 1; i++) {
-            const type = resultTypes[i];
-            // type.trigger.cats の中に topCatNames のいずれかが含まれているか、などを判定
-            // ここでは簡易的に「トリガーカテゴリのスコア合計が高いもの」を選びます
-            let currentScore = 0;
-            type.trigger.cats.forEach(c => {
-                 currentScore += (catScores[c] || 0);
+            // チャート型質問（キラークエスチョン）
+            q.options.forEach(opt => {
+                optionsHtml += `
+                    <button class="option-btn" onclick="answerChart('${q.tag}', '${opt.val}')">
+                        ${opt.label}
+                    </button>
+                `;
             });
-            
-            // 暫定的な判定ロジック（実際はもっと調整が必要です）
-            type.score = currentScore;
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="chart-badge">⚡ ここからは条件分岐</div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="options-vertical">${optionsHtml}</div>
+                </div>
+            `;
         }
-        
-        // スコアが一番高いタイプを選択
-        const bestMatch = resultTypes.slice(0, resultTypes.length - 1).sort((a,b) => b.score - a.score)[0];
-        if(bestMatch && bestMatch.score > 20) {
-            matchedType = bestMatch;
-        }
+    }
 
+    function answerScore(category, weight, point) {
+        // スコア加算
+        scores[category] += (point * weight);
+        next();
+    }
+
+    function answerChart(tag, value) {
+        // フィルタ条件保存
+        chartFilters[tag] = value;
+        next();
+    }
+
+    function next() {
+        if (currentQIndex < questions.length - 1) {
+            currentQIndex++;
+            // フェード演出のために少し遅らせる等は省略
+            renderQuestion();
+        } else {
+            finishDiagnosis();
+        }
+    }
+
+    function prevQuestion() {
+        if(currentQIndex > 0) {
+            // スコア減算ロジックは省略（厳密にするなら履歴管理が必要）
+            // 簡易的に戻るだけ実装
+            currentQIndex--;
+            renderQuestion();
+        }
+    }
+
+    function finishDiagnosis() {
+        document.getElementById('screen-question').classList.remove('active');
+        document.getElementById('screen-loading').classList.add('active');
+        
         setTimeout(() => {
-            showResult(matchedType);
+            calcResult();
+            document.getElementById('screen-loading').classList.remove('active');
+            document.getElementById('screen-result').classList.add('active');
         }, 1500);
     }
 
-    // 結果表示
-    function showResult(type) {
-        goToScreen('screen-result');
+    function calcResult() {
+        // 1. チャートフィルタのキーを作成 (例: "Solo_Money")
+        const key = `${chartFilters.Environment}_${chartFilters.Priority}`;
+        
+        // 2. スコアが最も高いカテゴリを特定
+        //    (同点の場合は Service > Task > Physical > Creative の順とする)
+        let maxScore = -1;
+        let bestCat = "Service";
+        
+        for (const [cat, score] of Object.entries(scores)) {
+            if (score > maxScore) {
+                maxScore = score;
+                bestCat = cat;
+            }
+        }
 
-        document.getElementById('resultType').textContent = type.name;
-        document.getElementById('resultDesc').textContent = type.desc;
-        document.getElementById('resIncome').textContent = userIncome.toLocaleString();
+        // 3. マッチング
+        //    フィルタキーが一致し、かつ mainCat がベストカテゴリ(または代替)なものを探す
+        //    ※ 厳密に一致しない場合は、そのフィルタキーの中でデフォルト的なものを出すロジックも可
+        let result = results.find(r => r.filterKey === key && r.mainCat === bestCat);
+        
+        // 見つからない場合（レアケース）は、キーが合うものの先頭を使用
+        if (!result) {
+            result = results.find(r => r.filterKey === key) || fallbackResult;
+        }
 
-        // おすすめバイト表示
-        const jobsHtml = type.jobs.map(job => {
-            const hours = Math.ceil(userIncome / job.wage);
-            return `
-                <div class="job-card">
-                    <div class="job-title">${job.title}</div>
-                    <p style="font-size: 14px; color: #666; margin-bottom: 8px;">${job.desc}</p>
-                    <div style="font-size: 14px; background: white; padding: 10px; border-radius: 5px;">
-                        時給目安: <strong>${job.wage}円</strong> / 
-                        目標達成には: <strong>月${hours}時間</strong>
-                    </div>
+        // --- 表示への反映 ---
+        document.getElementById('resultTitle').textContent = result.title;
+        document.getElementById('resultDesc').textContent = result.desc;
+        
+        // タグ
+        const tagHtml = result.tags.map((t, i) => 
+            `<span class="tag ${i===0?'highlight':''}">${t}</span>`
+        ).join('');
+        document.getElementById('matchTags').innerHTML = tagHtml;
+
+        // 求人リスト
+        const jobHtml = result.jobs.map(j => `
+            <div class="job-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="job-title">${j.t}</div>
+                    <div class="job-wage">${j.w}</div>
+                </div>
+            </div>
+        `).join('');
+        document.getElementById('jobList').innerHTML = jobHtml;
+
+        // シェアリンク
+        const shareText = `私の適職は【${result.title}】でした！性格適性×条件で診断🔍`;
+        document.getElementById('shareX').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(location.href)}`;
+        document.getElementById('shareLine').href = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(location.href)}`;
+
+        // チャート描画
+        drawChart(bestCat);
+    }
+
+    function drawChart(bestCat) {
+        const chartContainer = document.getElementById('scoreChart');
+        const labels = { Service:"接客", Task:"作業", Physical:"体力", Creative:"創造" };
+        
+        // 最大スコアに対する割合で高さを決定
+        const maxVal = Math.max(...Object.values(scores)) || 1;
+
+        let html = '';
+        for (const [key, val] of Object.entries(scores)) {
+            const height = (val / maxVal) * 80 + 20; // 最小20%
+            const isMain = key === bestCat ? 'main' : '';
+            html += `
+                <div class="chart-bar-group">
+                    <div class="chart-bar ${isMain}" style="height: ${height}%"></div>
+                    <div class="chart-label">${labels[key]}</div>
                 </div>
             `;
-        }).join('');
-        document.getElementById('resultJobs').innerHTML = jobsHtml;
-
-        // シェアリンク生成
-        const text = `私は「${type.name}」タイプでした！目標月収は${userIncome/10000}万円💰 あなたも診断してみる？`;
-        const url = encodeURIComponent(location.href);
-        document.getElementById('shareX').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}&hashtags=マイナビバイト診断`;
-        document.getElementById('shareLine').href = `https://social-plugins.line.me/lineit/share?url=${url}`;
+        }
+        chartContainer.innerHTML = html;
     }
 
 </script>
-
 </body>
 </html>
