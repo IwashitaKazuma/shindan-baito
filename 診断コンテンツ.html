@@ -637,9 +637,9 @@
         document.getElementById('resultJobs').innerHTML = jobsHtml;
 
         // シェアリンク生成
-        const text = `私は「${type.name}」タイプでした！目標月収は${userIncome/10000}万円💰 あなたも診断してみる？`;
+        const text = `私は「${type.name}」タイプでした！あなたも診断してみよう！`;
         const url = encodeURIComponent(location.href);
-        document.getElementById('shareX').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}&hashtags=マイナビバイト診断`;
+        document.getElementById('shareX').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${url}&hashtags=懐うるおい計画`;
         document.getElementById('shareLine').href = `https://social-plugins.line.me/lineit/share?url=${url}`;
     }
 
@@ -722,5 +722,6 @@
 
 </body>
 </html>
+
 
 
