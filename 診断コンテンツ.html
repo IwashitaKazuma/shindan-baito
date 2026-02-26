@@ -131,6 +131,29 @@
             font-size: 12px; margin: 2px;
         }
 
+        /* 🆕 改修: 求人ボタンのスタイル */
+        .job-link-buttons {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+        }
+        .job-link-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00A0E9 0%, #0077C8 100%);
+            color: white; border: none; border-radius: 50px;
+            font-size: 13px; font-weight: bold; cursor: pointer;
+            transition: all 0.3s ease; text-decoration: none;
+            box-shadow: 0 3px 10px rgba(0, 160, 233, 0.25);
+        }
+        .job-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 160, 233, 0.4);
+            color: white;
+        }
+        .job-link-btn::after {
+            content: "→";
+            font-size: 14px;
+        }
+
         .share-buttons { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
         .share-btn {
             display: flex; align-items: center; gap: 5px; padding: 10px 20px;
@@ -153,6 +176,9 @@
             .nav-buttons { flex-direction: column-reverse; }
             /* 🆕 追加: SP時のレーダーチャート調整 */
             .radar-chart-wrapper { max-width: 300px; padding: 15px; }
+            /* 🆕 改修: SP時の求人ボタン調整 */
+            .job-link-buttons { flex-direction: column; }
+            .job-link-btn { justify-content: center; width: 100%; }
         }
     </style>
 </head>
@@ -302,9 +328,7 @@
     const optionLabels = ["そう思わない", "あまり思わない", "どちらでもない", "ややそう思う", "とてもそう思う"];
     const optionScores = [1, 2, 3, 4, 5];
 
-    /* ========== 🆕 追加: レーダーチャート用 6軸マッピング ==========
-       既存の12カテゴリ → 6軸に集約する対応表
-    */
+    /* ========== 🆕 追加: レーダーチャート用 6軸マッピング ========== */
     const radarAxisMapping = {
         "接客":         ["社交性", "協調性", "忍耐力"],
         "コツコツ":     ["正確性", "継続力", "個人作業"],
@@ -314,15 +338,28 @@
         "チームワーク":  ["協調性", "リーダーシップ"]
     };
 
-    // 結果パターン
+    /* ========== 🆕 改修: 各バイトに対応するLP URLを追加 ========== */
     const resultTypes = [
         {
             name: "コミュニケーション・マスター",
             trigger: { cats: ["社交性", "協調性", "リーダーシップ"], minScore: 12 },
             desc: "人と関わることが得意なあなた。チームワークを発揮できる職場が輝きます。",
             jobs: [
-                { title: "カフェ・居酒屋ホール", wage: 1100, desc: "持ち前の明るさでお客様をファンに！" },
-                { title: "イベントスタッフ", wage: 1200, desc: "チーム一丸となってイベントを成功させる達成感。" }
+                {
+                    title: "カフェ・居酒屋ホール", wage: 1100,
+                    desc: "持ち前の明るさでお客様をファンに！",
+                    links: [
+                        { label: "カフェの求人を見る", url: "https://baito.mynavi.jp/shokushu/cafe/" },
+                        { label: "居酒屋の求人を見る", url: "https://baito.mynavi.jp/shokushu/izakaya/" }
+                    ]
+                },
+                {
+                    title: "イベントスタッフ", wage: 1200,
+                    desc: "チーム一丸となってイベントを成功させる達成感。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/event/" }
+                    ]
+                }
             ]
         },
         {
@@ -330,8 +367,20 @@
             trigger: { cats: ["正確性", "継続力", "個人作業"], minScore: 12 },
             desc: "集中力と正確性が武器。自分のペースで黙々と進める作業が向いています。",
             jobs: [
-                { title: "データ入力・事務", wage: 1150, desc: "正確な作業でオフィスワークスキルもGET。" },
-                { title: "工場・軽作業", wage: 1200, desc: "接客なしで作業に没頭できます。" }
+                {
+                    title: "データ入力・事務", wage: 1150,
+                    desc: "正確な作業でオフィスワークスキルもGET。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/office/" }
+                    ]
+                },
+                {
+                    title: "工場・軽作業", wage: 1200,
+                    desc: "接客なしで作業に没頭できます。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/powerful/" }
+                    ]
+                }
             ]
         },
         {
@@ -339,8 +388,20 @@
             trigger: { cats: ["行動力", "体力", "柔軟性"], minScore: 12 },
             desc: "じっとしているのは苦手！体を動かしてガンガン稼ぐスタイルが最適。",
             jobs: [
-                { title: "引っ越し・配送", wage: 1300, desc: "高時給で体も鍛えられる一石二鳥バイト。" },
-                { title: "テーマパークスタッフ", wage: 1100, desc: "広い園内を動き回りながらゲストを笑顔に。" }
+                {
+                    title: "引っ越し・配送", wage: 1300,
+                    desc: "高時給で体も鍛えられる一石二鳥バイト。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/hikkoshi/" }
+                    ]
+                },
+                {
+                    title: "テーマパークスタッフ", wage: 1100,
+                    desc: "広い園内を動き回りながらゲストを笑顔に。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/kw/%E3%83%86%E3%83%BC%E3%83%9E%E3%83%91%E3%83%BC%E3%82%AF%E6%B1%82%E4%BA%BA/" }
+                    ]
+                }
             ]
         },
         {
@@ -348,8 +409,21 @@
             trigger: { cats: ["創造性", "トレンド", "論理性"], minScore: 12 },
             desc: "流行に敏感でセンスが良いあなた。その感性を活かせるバイトがおすすめ。",
             jobs: [
-                { title: "アパレル販売", wage: 1100, desc: "最新ファッションに囲まれてセンスアップ。" },
-                { title: "SNS運用・Webライター", wage: 1200, desc: "スキマ時間を使ってあなたのセンスを発信。" }
+                {
+                    title: "アパレル販売", wage: 1100,
+                    desc: "最新ファッションに囲まれてセンスアップ。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/apparel/" }
+                    ]
+                },
+                {
+                    title: "SNS運用・Webライター", wage: 1200,
+                    desc: "スキマ時間を使ってあなたのセンスを発信。",
+                    links: [
+                        { label: "SNS運用の求人を見る", url: "https://baito.mynavi.jp/kw/%EF%BD%93%EF%BD%8E%EF%BD%93%E3%80%80%E9%81%8B%E7%94%A8%E3%80%80%E3%82%A2%E3%83%AB%E3%83%90%E3%82%A4%E3%83%88/" },
+                        { label: "ライターの求人を見る", url: "https://baito.mynavi.jp/kw/%E3%83%A9%E3%82%A4%E3%82%BF%E3%83%BC%E3%80%80%E3%82%A2%E3%83%AB%E3%83%90%E3%82%A4%E3%83%88%E3%80%80%E5%8B%9F%E9%9B%86/" }
+                    ]
+                }
             ]
         },
         // デフォルト
@@ -358,8 +432,20 @@
             trigger: { cats: [], minScore: 0 },
             desc: "バランス感覚に優れたあなた。どんな環境でも適応できるポテンシャルがあります。",
             jobs: [
-                { title: "コンビニエンスストア", wage: 1050, desc: "多様な業務を経験でき、生活リズムに合わせて働けます。" },
-                { title: "スーパーマーケット", wage: 1080, desc: "地域密着で安定して長く働けます。" }
+                {
+                    title: "コンビニエンスストア", wage: 1050,
+                    desc: "多様な業務を経験でき、生活リズムに合わせて働けます。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/conveni/" }
+                    ]
+                },
+                {
+                    title: "スーパーマーケット", wage: 1080,
+                    desc: "地域密着で安定して長く働けます。",
+                    links: [
+                        { label: "求人を見る", url: "https://baito.mynavi.jp/shokushu/super/" }
+                    ]
+                }
             ]
         }
     ];
@@ -482,12 +568,10 @@
             let total = 0;
             let questionCount = 0;
             cats.forEach(cat => {
-                // そのカテゴリに属する質問数をカウント
                 const qsInCat = allQuestions.filter(q => q.category === cat);
                 questionCount += qsInCat.length;
                 total += (catScores[cat] || 0);
             });
-            // 5段階に正規化（平均スコア: 1〜5）
             radarScores[axisName] = questionCount > 0 ? Math.round((total / questionCount) * 10) / 10 : 0;
         }
 
@@ -512,7 +596,7 @@
         }
 
         setTimeout(() => {
-            showResult(matchedType, radarScores); // 🆕 radarScores を渡す
+            showResult(matchedType, radarScores);
         }, 1500);
     }
 
@@ -527,9 +611,15 @@
         /* 🆕 追加: レーダーチャート描画 */
         drawRadarChart(radarScores);
 
-        // おすすめバイト表示
+        /* 🆕 改修: おすすめバイト表示（求人LPボタン付き） */
         const jobsHtml = type.jobs.map(job => {
             const hours = Math.ceil(userIncome / job.wage);
+
+            // LP遷移ボタンを生成
+            const linkButtonsHtml = job.links.map(link =>
+                `<a href="${link.url}" class="job-link-btn" target="_blank" rel="noopener noreferrer">${link.label}</a>`
+            ).join('');
+
             return `
                 <div class="job-card">
                     <div class="job-title">${job.title}</div>
@@ -537,6 +627,9 @@
                     <div style="font-size: 14px; background: white; padding: 10px; border-radius: 5px;">
                         時給目安: <strong>${job.wage}円</strong> / 
                         目標達成には: <strong>月${hours}時間</strong>
+                    </div>
+                    <div class="job-link-buttons">
+                        ${linkButtonsHtml}
                     </div>
                 </div>
             `;
@@ -554,7 +647,6 @@
     function drawRadarChart(radarScores) {
         const ctx = document.getElementById('radarChart').getContext('2d');
 
-        // 再診断時に前のチャートを破棄
         if (window.myRadarChart) {
             window.myRadarChart.destroy();
         }
@@ -569,8 +661,8 @@
                 datasets: [{
                     label: 'あなたの適性',
                     data: data,
-                    backgroundColor: 'rgba(0, 160, 233, 0.15)',    // マイナビブルー（薄）
-                    borderColor: 'rgba(0, 160, 233, 0.8)',          // マイナビブルー
+                    backgroundColor: 'rgba(0, 160, 233, 0.15)',
+                    borderColor: 'rgba(0, 160, 233, 0.8)',
                     borderWidth: 2.5,
                     pointBackgroundColor: '#00A0E9',
                     pointBorderColor: '#fff',
@@ -630,4 +722,3 @@
 
 </body>
 </html>
-
